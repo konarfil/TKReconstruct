@@ -1,0 +1,13 @@
+# - Configuration
+
+#@description Simple pipeline using the TestModulePipeline
+#@key_label "name"
+#@meta_label "type"
+
+# - Module load section
+[name="flreconstruct.plugins" type="flreconstruct::section"]
+	plugins : string[1] = "TKReconstruct"
+	TKReconstruct.directory : string = "@PROJECT_BINARY_DIR@/"
+
+[name="pipeline" type="TKReconstruct"]
+
