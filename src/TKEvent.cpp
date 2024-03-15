@@ -664,7 +664,7 @@ void TKEvent::build_event()
 	TGeoManager *geom = new TGeoManager();
 	TGeoMaterial *matVacuum = new TGeoMaterial("matVacuum", 0, 0, 0);    
 	TGeoMedium *Vacuum = new TGeoMedium("Vacuum",1, matVacuum);
-	TGeoVolume *top = gGeoManager->MakeBox("top", Vacuum, 1500, 1750, 2500);
+	TGeoVolume *top = gGeoManager->MakeBox("top", Vacuum, 1000, 2500, 1750);
 	geom->SetTopVolume(top);
 
 	int object_counter = 0;
@@ -772,7 +772,7 @@ void TKEvent::build_event()
 	{
 		double radius = tc_radius; // default value
 		double sigma_R = 2.0; //default value
-		double sigma_Z = 17.0; //tr_hits[hit]->get_sigma_Z();
+		double sigma_Z = tr_hits[hit]->get_sigma_Z();
 		bool is_broken = false;
 		
 		if( tr_hits[hit]->get_r() > 35.0 || tr_hits[hit]->get_r() == -1.0 ) 

@@ -1,3 +1,7 @@
 /Events_visu
 /build
 /brio
+MockCalibratePipeline.conf
+rec.conf
+PTD_tracking.conf
+visu.cpp

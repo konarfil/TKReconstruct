@@ -8,15 +8,15 @@ echo "#############################################"
 echo " "
 
 cd include
-echo "rootcling: ./include/TKEvent.h         -> ./include/TKEventdict.pcm         + ./include/TKEventdict.cpp"
+echo "rootcling: ./include/TKEvent.h         -> ./include/TKEventdict_rdict.pcm         + ./include/TKEventdict.cpp"
       	      rootcling -f ../lib/TKEventdict.cpp  TKEvent.h+
-echo "rootcling: ./include/TKOMhit.h         -> ./include/TKOMhitdict.pcm         + ./include/TKOMhitdict.cpp"
+echo "rootcling: ./include/TKOMhit.h         -> ./include/TKOMhitdict_rdict.pcm         + ./include/TKOMhitdict.cpp"
       	      rootcling -f ../lib/TKOMhitdict.cpp  TKOMhit.h+
-echo "rootcling: ./include/TKtrhit.h         -> ./include/TKtrhitdict.pcm         + ./include/TKtrhitdict.cpp"
+echo "rootcling: ./include/TKtrhit.h         -> ./include/TKtrhitdict_rdict.pcm         + ./include/TKtrhitdict.cpp"
       	      rootcling -f ../lib/TKtrhitdict.cpp  TKtrhit.h+
-echo "rootcling: ./include/TKtrack.h         -> ./include/TKtrackdict.pcm         + ./include/TKtrackdict.cpp"
+echo "rootcling: ./include/TKtrack.h         -> ./include/TKtrackdict_rdict.pcm         + ./include/TKtrackdict.cpp"
       	      rootcling -f ../lib/TKtrackdict.cpp  TKtrack.h+
-echo "rootcling: ./include/TKcluster.h       -> ./include/TKclusterdict.pcm       + ./include/TKclusterdict.cpp"
+echo "rootcling: ./include/TKcluster.h       -> ./include/TKclusterdict_rdict.pcm       + ./include/TKclusterdict.cpp"
       	      rootcling -f ../lib/TKclusterdict.cpp  TKcluster.h+
 
 echo " "
