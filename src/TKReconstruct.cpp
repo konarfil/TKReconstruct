@@ -146,7 +146,7 @@ void TKReconstruct::fill_TCD_bank(TKEvent* event, snemo::datamodel::calibrated_d
 	namespace snedm = snemo::datamodel;
  
 	auto htcs = datatools::make_handle<snedm::TrackerClusteringSolution>();
-	the_tracker_clustering_data.push_back(htcs, true);
+	the_tracker_clustering_data.append_solution(htcs, true);
 	the_tracker_clustering_data.get_default().set_solution_id(the_tracker_clustering_data.size() - 1);
 
 	snedm::tracker_clustering_solution& clustering_solution = the_tracker_clustering_data.get_default();
@@ -171,9 +171,9 @@ void TKReconstruct::fill_TCD_bank(TKEvent* event, snemo::datamodel::calibrated_d
 				{
 					cluster_handle->hits().push_back(trhit);				
 				}
-			}
-			
+			}			
 		}		
+		cluster_handle->set_geom_id(geomtools::geom_id(1201, 0, cluster_handle->hits()[0]->get_side()));
 	}
 
 	return;
@@ -239,6 +239,11 @@ void TKReconstruct::fill_TTD_bank(TKEvent* event, snemo::datamodel::tracker_clus
 				h_trajectory->set_cluster_handle(a_cluster);
 				h_trajectory->set_pattern_handle(h_pattern);
 				
+				h_trajectory->set_geom_id(geomtools::geom_id(1201, 0, a_cluster->hits()[0]->get_side()));
+				
+				h_trajectory->get_fit_infos().set_best(true);
+				h_trajectory->get_fit_infos().set_algo(snedm::track_fit_algo_type::TRACK_FIT_ALGO_LINE);
+				
 				/*double chi2 = std::pow(a_fit_solution.chi, 2);
 				h_trajectory->get_fit_infos().set_chi2(chi2);
 				h_trajectory->get_fit_infos().set_ndof(a_fit_solution.ndof);
@@ -247,9 +252,9 @@ void TKReconstruct::fill_TTD_bank(TKEvent* event, snemo::datamodel::tracker_clus
 				geomtools::line_3d & line_3d = line_pattern->get_segment();
 				line_to_verteces(cluster->get_track(), line_3d);
 				
-				unsigned int thisTrajId = a_trajectory_solution->grab_best_trajectories().size();
-				h_trajectory->set_id(thisTrajId);
+				a_trajectory_solution->grab_best_trajectories().insert(id);
 				a_trajectory_solution->grab_trajectories().push_back(h_trajectory);
+	
 			
 			} 
 		
@@ -321,8 +326,7 @@ void TKReconstruct::line_to_verteces(TKtrack* track, geomtools::line_3d & line_3
 	
 	double x,y,z;
 	
-	//x = 435.0;
-	x = 400.0;
+	x = 435.0;
 	if( track->get_side() == 0 ) 
 	{
 		x = -x;
