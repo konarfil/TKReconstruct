@@ -5,7 +5,6 @@ DPP_MODULE_REGISTRATION_IMPLEMENT(TKReconstruct, "TKReconstruct")
 
 TKReconstruct::TKReconstruct() : dpp::base_module() 
 {
-    eventNo = 0;
     std::cout << "constructed!" << std::endl;
 }
 
@@ -28,6 +27,7 @@ void TKReconstruct::initialize(
 
 dpp::base_module::process_status TKReconstruct::process(datatools::things& workItem) 
 {
+	//eventNo = workItem->get_id();
 	TKEvent* event = get_event_data(workItem); 	// event -> TKEvent
 	event->reconstruct_ML(0);			// TKEvent -> TKtrack
 	//event->print();
@@ -52,17 +52,7 @@ dpp::base_module::process_status TKReconstruct::process(datatools::things& workI
 	// Fill TKtrack data into TTD bank
 	fill_TTD_bank(event, the_tracker_clustering_data, the_tracker_trajectory_data);
 
-	/*
-	// Create or reset PTD bank
-	auto & the_particle_track_data = ::snedm::getOrAddToEvent<snedm::particle_track_data>("PTD", workItem);
-	the_particle_track_data.clear();
-	
-	// Fill PTD bank
-	fill_PTD_bank(event, the_tracker_clustering_data, the_tracker_trajectory_data, the_particle_track_data);
-	*/
-
 	delete event;
-	eventNo++;
 	return falaise::processing::status::PROCESS_OK;
 }
 
@@ -74,71 +64,80 @@ void TKReconstruct::reset()
 
 TKEvent* TKReconstruct::get_event_data(datatools::things& workItem)
 {
-	TKEvent* event = new TKEvent(0, eventNo);
+	auto &header = workItem.get<snemo::datamodel::event_header>("EH");
 
-    if(workItem.has("CD"))
-    {
-        using namespace snemo::datamodel;
+	/*
+	std::cout << "event: " << eventNo << std::endl;
+	std::cout << "get_event_number: " << header.get_id().get_event_number() << std::endl;
+	std::cout << "get_run_number: " << header.get_id().get_run_number() << std::endl;
+	std::cout << "get_mc_run_id: " << header.get_mc_run_id() << std::endl;
+	*/
 
-        snemo::datamodel::calibrated_data falaiseCDbank = workItem.get<calibrated_data>("CD");
+	TKEvent* event = new TKEvent(header.get_mc_run_id(), header.get_id().get_event_number());
 
-        for ( auto &calohit : falaiseCDbank.calorimeter_hits() )
-        {
-        	int SWCR[4] = {-1,-1,-1,-1};
-        	switch( calohit->get_geom_id().get_type() )
-        	{
-        	case 1302: 
-        		SWCR[0] = calohit->get_geom_id().get(1);
-        		SWCR[2] = calohit->get_geom_id().get(2);
-        		SWCR[3] = calohit->get_geom_id().get(3);
-        		break;
-        	case 1232:
-        		SWCR[0] = calohit->get_geom_id().get(1);
-        		SWCR[1] = calohit->get_geom_id().get(2);
-        		SWCR[2] = calohit->get_geom_id().get(3);
-        		SWCR[3] = calohit->get_geom_id().get(4);
-        		break;
-        	case 1252:
-        		SWCR[0] = calohit->get_geom_id().get(1);
-        		SWCR[1] = calohit->get_geom_id().get(2);
-        		SWCR[2] = calohit->get_geom_id().get(3);
-        		break;
+	if(workItem.has("CD"))
+	{
+		using namespace snemo::datamodel;
+
+		calibrated_data falaiseCDbank = workItem.get<calibrated_data>("CD");
+
+		for ( auto &calohit : falaiseCDbank.calorimeter_hits() )
+		{
+			int SWCR[4] = {-1,-1,-1,-1};
+			switch( calohit->get_geom_id().get_type() )
+			{
+			case 1302: 
+				SWCR[0] = calohit->get_geom_id().get(1);
+				SWCR[2] = calohit->get_geom_id().get(2);
+				SWCR[3] = calohit->get_geom_id().get(3);
+				break;
+			case 1232:
+				SWCR[0] = calohit->get_geom_id().get(1);
+				SWCR[1] = calohit->get_geom_id().get(2);
+				SWCR[2] = calohit->get_geom_id().get(3);
+				SWCR[3] = calohit->get_geom_id().get(4);
+				break;
+			case 1252:
+				SWCR[0] = calohit->get_geom_id().get(1);
+				SWCR[1] = calohit->get_geom_id().get(2);
+				SWCR[2] = calohit->get_geom_id().get(3);
+				break;
+			}
+			TKOMhit* OMhit = new TKOMhit(SWCR);		
+			OMhit->set_energy( calohit->get_energy() ); 
+			
+			event->get_OM_hits().push_back( OMhit );
 		}
-		TKOMhit* OMhit = new TKOMhit(SWCR);		
-        	OMhit->set_energy( calohit->get_energy() ); 
-        	
-		event->get_OM_hits().push_back( OMhit );
-        }
-        
-        for ( auto &trhit : falaiseCDbank.tracker_hits() )
-        {
-		int SRL[3] = {trhit->get_side(), trhit->get_row(), trhit->get_layer()};
-        	TKtrhit* hit = new TKtrhit(SRL);
-        	
-        	if( trhit->get_r() == trhit->get_r() )
-        	{
-				hit->set_r( trhit->get_r() );        	
-				hit->set_sigma_R( /*trhit->get_sigma_r()*/ 2.0 );
-        	}
-        	else
-        	{
-        		hit->set_r( -1 );        	
-				hit->set_sigma_R( -1 );
-        	}
-          	hit->set_h( trhit->get_z() );
-          	hit->set_sigma_Z( trhit->get_sigma_z() );
-        	
-        	/*
-        	std::cout << "r: 	" << trhit->get_r() << std::endl;
-        	std::cout << "sigma_r: 	" << trhit->get_sigma_r() << std::endl;
-        	std::cout << "Z: 	" << trhit->get_z() << std::endl;
-        	std::cout << "sigma_Z: 	" << trhit->get_sigma_z() << std::endl;
-        	*/
-        	event->get_tr_hits().push_back( hit );
-        }
 
-    }
-    return event;
+		for ( auto &trhit : falaiseCDbank.tracker_hits() )
+		{
+			int SRL[3] = {trhit->get_side(), trhit->get_row(), trhit->get_layer()};
+			TKtrhit* hit = new TKtrhit(SRL);
+			
+			if( trhit->get_r() == trhit->get_r() )
+			{
+					hit->set_r( trhit->get_r() );        	
+					hit->set_sigma_R( /*trhit->get_sigma_r()*/ 2.0 );
+			}
+			else
+			{
+				hit->set_r( -1 );        	
+					hit->set_sigma_R( -1 );
+			}
+		  	hit->set_h( trhit->get_z() );
+		  	hit->set_sigma_Z( trhit->get_sigma_z() );
+			
+			/*
+			std::cout << "r: 	" << trhit->get_r() << std::endl;
+			std::cout << "sigma_r: 	" << trhit->get_sigma_r() << std::endl;
+			std::cout << "Z: 	" << trhit->get_z() << std::endl;
+			std::cout << "sigma_Z: 	" << trhit->get_sigma_z() << std::endl;
+			*/
+			event->get_tr_hits().push_back( hit );
+		}
+
+	}
+	return event;
 }
 
 void TKReconstruct::fill_TCD_bank(TKEvent* event, snemo::datamodel::calibrated_data& falaiseCDbank, snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data)
@@ -261,62 +260,6 @@ void TKReconstruct::fill_TTD_bank(TKEvent* event, snemo::datamodel::tracker_clus
 		}
 	}
 	
-	return;
-}
-
-
-void TKReconstruct::fill_PTD_bank(TKEvent* event, snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data, snemo::datamodel::tracker_trajectory_data& the_tracker_trajectory_data, snemo::datamodel::particle_track_data& the_particle_track_data)
-{
-
-	namespace snedm = snemo::datamodel;
-	
-	// Get trajectory solutions:
-	const snedm::TrackerTrajectorySolutionHdlCollection & trajectory_solutions = the_tracker_trajectory_data.get_solutions();
-
-	// Loop on all trajectory solutions:
-	for (const datatools::handle<snedm::tracker_trajectory_solution> & a_trajectory_solution : trajectory_solutions) 
-	{
-		// Get traejctories stored in the current trajectory solution:
-		const snedm::TrackerTrajectoryHdlCollection & trajectories = a_trajectory_solution->get_trajectories();
-		
-		for (const datatools::handle<snedm::tracker_trajectory> & a_trajectory : trajectories) 
-		{
-	
-			// Create a handle of fake vertices :
-			snedm::VertexHdl vertex_1 = datatools::make_handle<snedm::Vertex>();
-			vertex_1->set_hit_id(0);
-			//vertex_1->grab_geom_id().set_type(1102);      // "source_strip" geometry category
-			//vertex_1->grab_geom_id().set_address(0, 23);  // module #0, source strip #23
-			//vertex_1->set_category(snedm::VERTEX_CATEGORY_ON_SOURCE_FOIL);
-			//vertex_1->set_from(snedm::VERTEX_FROM_LAST);
-			vertex_1->set_extrapolation(snedm::VERTEX_EXTRAPOLATION_LINE);
-			vertex_1->set_spot(geomtools::blur_spot(geomtools::blur_spot::dimension_three));
-			vertex_1->get_spot().set_position(geomtools::vector_3d(1.0 * CLHEP::mm, 2.0 * CLHEP::mm, 0.0 * CLHEP::mm));
-			//vertex_1->get_spot().set_x_error(0.5 * CLHEP::mm);
-			//vertex_1->get_spot().set_y_error(0.5 * CLHEP::mm);
-			//vertex_1->get_spot().set_z_error(0.5 * CLHEP::mm);
-
-			snedm::VertexHdl vertex_2 = datatools::make_handle<snedm::Vertex>();
-			vertex_2->set_hit_id(1);
-			vertex_2->set_extrapolation(snedm::VERTEX_EXTRAPOLATION_LINE);
-			vertex_2->set_spot(geomtools::blur_spot(geomtools::blur_spot::dimension_three));
-			vertex_2->get_spot().set_position(geomtools::vector_3d(430.0 * CLHEP::mm, 20.0 * CLHEP::mm, 30.0 * CLHEP::mm));
-
-			// Create the particle track :
-			datatools::handle<snedm::particle_track> particle_track;
-			particle_track.reset(new snedm::particle_track);
-			particle_track.grab().set_track_id(0);
-			particle_track.grab().set_charge(snedm::particle_track::CHARGE_UNDEFINED); 
-			
-			particle_track.grab().set_trajectory_handle(a_trajectory);
-			particle_track.grab().get_vertices().push_back(vertex_1);
-			particle_track.grab().get_vertices().push_back(vertex_2);
-
-			// Particle track data bank :
-			the_particle_track_data.insertParticle(particle_track);
-		}
-	}
-
 	return;
 }
 

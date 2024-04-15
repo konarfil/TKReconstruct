@@ -12,6 +12,7 @@
 #include "falaise/snemo/processing/module.h"
 #include "falaise/snemo/datamodels/calibrated_data.h"
 #include <falaise/snemo/datamodels/data_model.h>
+#include <falaise/snemo/datamodels/event_header.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include "falaise/snemo/datamodels/tracker_clustering_solution.h"
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
@@ -48,12 +49,10 @@ public:
     TKEvent* get_event_data(datatools::things &workItem);
     void fill_TCD_bank(TKEvent* event, snemo::datamodel::calibrated_data& falaiseCDbank, snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data);
     void fill_TTD_bank(TKEvent* event, snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data, snemo::datamodel::tracker_trajectory_data& the_tracker_trajectory_data);
-    void fill_PTD_bank(TKEvent* event, snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data, snemo::datamodel::tracker_trajectory_data& the_tracker_trajectory_data, snemo::datamodel::particle_track_data& the_particle_track_data);
     
     void line_to_verteces(TKtrack* track, geomtools::line_3d & line_3d);
 
 private:
-    int eventNo;
 
     DPP_MODULE_REGISTRATION_INTERFACE(TKReconstruct);
 };
