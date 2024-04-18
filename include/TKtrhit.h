@@ -45,7 +45,6 @@ class TKtrhit: public TObject
 		void set_cell_num(int _cell_num);
 		void set_tsp	  (int64_t _tsp[7]); // sets timestamps
 
-
 		void set_h(double _h);
 		void set_h();	// space for better model implementation
 		void set_sigma_Z(double _sigma_Z);

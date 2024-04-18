@@ -17,8 +17,11 @@ echo "rootcling: ./include/TKtrhit.h         -> ./include/TKtrhitdict_rdict.pcm 
 echo "rootcling: ./include/TKtrack.h         -> ./include/TKtrackdict_rdict.pcm         + ./include/TKtrackdict.cpp"
       	      rootcling -f ../lib/TKtrackdict.cpp  TKtrack.h+
 echo "rootcling: ./include/TKcluster.h       -> ./include/TKclusterdict_rdict.pcm       + ./include/TKclusterdict.cpp"
-      	      rootcling -f ../lib/TKclusterdict.cpp  TKcluster.h+
-
+      	       rootcling -f ../lib/TKclusterdict.cpp  TKcluster.h+
+      	echo "rootcling: ./include/TKtrajectory.h     -> ./include/TKtrajectorydict_rdict.pcm       + ./include/TKtrajectorydict.cpp"
+      	      rootcling -f ../lib/TKtrajectorydict.cpp  TKtrajectory.h+
+      	echo "rootcling: ./include/TKpoint.h     -> ./include/TKpointdict_rdict.pcm       + ./include/TKpointdict.cpp"
+      	      rootcling -f ../lib/TKpointdict.cpp  TKpoint.h+
 echo " "
 echo "Dictionaries generated!"
 echo " "

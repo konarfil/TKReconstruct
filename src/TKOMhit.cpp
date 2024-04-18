@@ -240,16 +240,6 @@ void TKOMhit::set_HT(bool _HT)
 	HT = _HT;
 }
 
-void TKOMhit::set_underflow(bool _underflow)
-{
-	underflow = _underflow;
-}
-
-void TKOMhit::set_overflow(bool _overflow)
-{
-	overflow = _overflow;
-}
-
 void TKOMhit::set_charge(int32_t _charge)
 {
 	charge = _charge;
@@ -275,14 +265,6 @@ void TKOMhit::set_OM_pcell(int16_t _OM_pcell)
 	OM_pcell = _OM_pcell;
 }
 
-void TKOMhit::set_energy(double _energy)
-{
-	energy = _energy;
-}
-
-
-
-
 int TKOMhit::get_OM_num()
 {
 	return OM_num;
@@ -291,16 +273,6 @@ int TKOMhit::get_OM_num()
 bool TKOMhit::is_HT()
 {
 	return HT;
-}
-
-bool TKOMhit::is_underflow()
-{
-	return underflow;
-}
-
-bool TKOMhit::is_overflow()
-{
-	return overflow;
 }
 
 int32_t TKOMhit::get_charge()
@@ -326,11 +298,6 @@ int64_t TKOMhit::get_OM_TDC()
 int64_t TKOMhit::get_OM_pcell()
 {
 	return OM_pcell;
-}
-
-double TKOMhit::get_energy()
-{
-	return energy;
 }
 
 int TKOMhit::get_SWCR(char _SWCR_n)

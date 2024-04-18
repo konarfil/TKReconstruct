@@ -8,6 +8,7 @@
 // Third party:
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/line_3d.h>
+#include <bayeux/geomtools/polyline_3d.h>
 
 #include "falaise/snemo/processing/module.h"
 #include "falaise/snemo/datamodels/calibrated_data.h"
@@ -18,6 +19,7 @@
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
 #include <falaise/snemo/datamodels/tracker_trajectory_solution.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
+#include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 #include "falaise/snemo/datamodels/particle_track_data.h"
 
 #include "TKEvent.h"
