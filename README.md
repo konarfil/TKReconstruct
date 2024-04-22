@@ -16,4 +16,4 @@ To obtain the final PTD bank you then need to apply Charged Particle Tracking mo
 
   Usage:
 
-    flreconstruct -i brio/"CD_file_name".brio -p build/TKReconstructPipeline.conf -o brio/"TTD_file_name".brio
+    flreconstruct -i "CD_file".brio -p build/TKReconstructPipeline.conf -o "TTD_file".brio
