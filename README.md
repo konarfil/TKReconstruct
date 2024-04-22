@@ -4,7 +4,6 @@ TKReconstruct module takes CD bank as an input a creates a reconstruction using 
 
 To obtain the final PTD bank you then need to apply Charged Particle Tracking module that extrapolates the verteces and creates the PTD bank.
 
-Installation:
 
   load the environement:
   
@@ -14,3 +13,7 @@ Installation:
   install:
   
     ./install_test.sh
+
+  Usage:
+
+    flreconstruct -i brio/"CD_file_name".brio -p build/TKReconstructPipeline.conf -o brio/"TTD_file_name".brio
