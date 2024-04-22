@@ -1,10 +1,10 @@
 /Events_visu
 /build
 /lib
+/src/dict
 /brio
 MockCalibratePipeline.conf
 rec.conf
-PTD_tracking.conf
 visu.cpp
 /src/dicts
 *.txt
