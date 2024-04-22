@@ -1,7 +1,6 @@
 /Events_visu
 /build
 /lib
-/src/dict
 /brio
 MockCalibratePipeline.conf
 rec.conf
