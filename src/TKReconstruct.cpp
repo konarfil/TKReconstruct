@@ -119,9 +119,18 @@ TKEvent* TKReconstruct::get_event_data(datatools::things& workItem)
 				hit->set_r( -1 );        	
 					hit->set_sigma_R( -1 );
 			}
-		  	hit->set_h( trhit->get_z() );
-		  	hit->set_sigma_Z( trhit->get_sigma_z() );
 			
+			if(trhit->get_z() == trhit->get_z())
+			{
+			  	hit->set_h( trhit->get_z() );
+			  	hit->set_sigma_Z( trhit->get_sigma_z() );
+		  	}
+		  	else
+		  	{
+		  		hit->set_h( 0.0 );
+		  		hit->set_sigma_Z( 17.0 );
+		  	}
+		 
 			/*
 			std::cout << "r: 	" << trhit->get_r() << std::endl;
 			std::cout << "sigma_r: 	" << trhit->get_sigma_r() << std::endl;
@@ -238,12 +247,11 @@ void TKReconstruct::fill_TTD_bank(TKEvent* event, snemo::datamodel::tracker_clus
 
 			// Create new 'tracker_pattern' handle:
 			snedm::TrajectoryPatternHdl h_pattern;
-			/*
+			
 			auto polyline_pattern = new snedm::polyline_trajectory_pattern;
 			h_pattern.reset(polyline_pattern);
-			*/
-			auto line_pattern = new snedm::line_trajectory_pattern;
-			h_pattern.reset(line_pattern);
+			
+			//auto line_pattern = new snedm::line_trajectory_pattern;
 			h_trajectory->set_pattern_handle(h_pattern);
 			
 			
@@ -262,7 +270,7 @@ void TKReconstruct::fill_TTD_bank(TKEvent* event, snemo::datamodel::tracker_clus
 			//h_trajectory->get_fit_infos().set_chi2(chi2);
 			//h_trajectory->get_fit_infos().set_ndof(a_fit_solution.ndof);
 			
-			/*
+			
 			geomtools::polyline_3d& polyline = polyline_pattern->get_path();
 			
 			for(int j = 0; j < traj->get_track_points().size(); j++)
@@ -270,14 +278,14 @@ void TKReconstruct::fill_TTD_bank(TKEvent* event, snemo::datamodel::tracker_clus
 				TKpoint* point = traj->get_track_points()[j];
 				geomtools::vector_3d geom_point = {point->get_x(), point->get_y(), point->get_z()}; 
 				polyline.add(geom_point);
-			}*/
+			}
 			//line_to_verteces(cluster->get_track(), line_3d);
-			
+			/*
 			geomtools::line_3d& line_3d = line_pattern->get_segment();
 			TKpoint* start = traj->get_track_points()[0];
 			TKpoint* end   = traj->get_track_points()[1];	
 			line_3d.set_first(start->get_x() * CLHEP::mm, start->get_y() * CLHEP::mm, start->get_z() * CLHEP::mm);
-			line_3d.set_last(end->get_x() * CLHEP::mm, end->get_y() * CLHEP::mm, end->get_z() * CLHEP::mm);
+			line_3d.set_last(end->get_x() * CLHEP::mm, end->get_y() * CLHEP::mm, end->get_z() * CLHEP::mm);*/
 			
 			a_trajectory_solution->grab_best_trajectories().insert(i);
 			a_trajectory_solution->grab_trajectories().push_back(h_trajectory);
