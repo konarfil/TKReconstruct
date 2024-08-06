@@ -109,18 +109,18 @@ TKEvent* TKReconstruct::get_event_data(datatools::things& workItem)
 			int SRL[3] = {trhit->get_side(), trhit->get_row(), trhit->get_layer()};
 			TKtrhit* hit = new TKtrhit(SRL);
 			
-			if( trhit->get_r() == trhit->get_r() )
+			if(!std::isnan(trhit->get_r()))
 			{
-					hit->set_r( trhit->get_r() );        	
-					hit->set_sigma_R( /*trhit->get_sigma_r()*/ 2.0 );
+				hit->set_r( trhit->get_r() );        	
+				hit->set_sigma_R( /*trhit->get_sigma_r()*/ 2.0 );
 			}
 			else
 			{
 				hit->set_r( -1 );        	
-					hit->set_sigma_R( -1 );
+				hit->set_sigma_R( -1 );
 			}
 			
-			if(trhit->get_z() == trhit->get_z())
+			if(!(trhit->get_z()))
 			{
 			  	hit->set_h( trhit->get_z() );
 			  	hit->set_sigma_Z( trhit->get_sigma_z() );
