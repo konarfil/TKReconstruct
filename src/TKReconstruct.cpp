@@ -120,7 +120,7 @@ TKEvent* TKReconstruct::get_event_data(datatools::things& workItem)
 				hit->set_sigma_R( -1 );
 			}
 			
-			if(!(trhit->get_z()))
+			if(!std::isnan(trhit->get_z()))
 			{
 			  	hit->set_h( trhit->get_z() );
 			  	hit->set_sigma_Z( trhit->get_sigma_z() );
